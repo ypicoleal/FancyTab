@@ -1,5 +1,6 @@
 package com.github.ypicoleal.fancytab;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.AttrRes;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StyleRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +16,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 
 public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListItemClickListener{
@@ -58,7 +61,28 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
             Log.i("values", "current: " + currPosition + ", position: " + position + ", offset: " + positionOffset + " residual: " + residual);
 
+            animateSelection(position, positionOffset);
+
             oldPositionOffset = positionOffset;
+        }
+
+        private void animateSelection(int position, float positionOffset) {
+            View tab = tabsContainer.getLayoutManager().findViewByPosition(position);
+            TextView tabText = (TextView) tab.findViewById(R.id.tab_text);
+
+            float currTextSize = 24f;
+            float targetSize = 16f;
+
+            int startColor = ContextCompat.getColor(tabText.getContext(), android.R.color.white);
+            int targetColor = ContextCompat.getColor(tabText.getContext(), R.color.facyTabTextColor);
+
+            float size = currTextSize - ((currTextSize - targetSize) * positionOffset);
+
+            ArgbEvaluator evaluator = new ArgbEvaluator();
+            int color = (int) evaluator.evaluate(positionOffset, startColor, targetColor);
+
+            tabText.setTextSize(size);
+            tabText.setTextColor(color);
         }
 
         @Override
