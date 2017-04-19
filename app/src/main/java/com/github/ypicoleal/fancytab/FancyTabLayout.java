@@ -24,6 +24,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
         float oldPositionOffset = 0;
         int viewWidth;
+        int scrollDirection;
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -35,21 +36,25 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
             if(oldPositionOffset == 0){
                 viewWidth = tab.getWidth();
-                Log.i("offset", "zero " + tab.getWidth());
+                if (position != currPosition){
+                    oldPositionOffset = 1;
+                }
             }
 
+            int scroll = (int) ((positionOffset - oldPositionOffset) * viewWidth);
 
-
-            int scroll = (int) ((positionOffset * viewWidth) - (oldPositionOffset * viewWidth));
-
-            if (position != currPosition){
-                scroll = -scroll;
+            if(positionOffset == 0){
+                tab = tabsContainer.getLayoutManager().findViewByPosition(position);
+                scroll = (int) tab.getX();
             }
 
             Log.i("scroll",  "" + scroll);
 
             tabsContainer.scrollBy(scroll, 0);
-            oldPositionOffset = positionOffset;
+
+            Log.i("values", "current: " + currPosition + ", position: " + position + ", offset: " + positionOffset);
+
+            oldPositionOffset = positionOffset == 1 ? 0 : positionOffset;
         }
 
         @Override
