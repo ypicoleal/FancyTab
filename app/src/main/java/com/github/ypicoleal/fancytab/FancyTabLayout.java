@@ -26,7 +26,6 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
         float oldPositionOffset = 0;
-        int viewWidth;
         float residual;
 
         @Override
@@ -36,9 +35,10 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
             int firstItem = ((LinearLayoutManager) tabsContainer.getLayoutManager()).findFirstVisibleItemPosition();
 
             View tab = tabsContainer.getLayoutManager().findViewByPosition(firstItem);
+            int viewWidth = tab.getWidth();
 
             if(oldPositionOffset == 0){
-                viewWidth = tab.getWidth();
+
                 residual = 0;
                 if (position != currPosition){
                     oldPositionOffset = 1;
@@ -57,10 +57,13 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
             Log.i("scroll",  scrollF + ", " + scroll);
 
-            tabsContainer.scrollBy(scroll, 0);
+            if (positionOffset == 0) {
+                tabsContainer.smoothScrollBy(scroll, 0);
+            } else {
+                tabsContainer.scrollBy(scroll, 0);
+            }
 
             Log.i("values", "current: " + currPosition + ", position: " + position + ", offset: " + positionOffset + " residual: " + residual);
-
             animateSelection(position, positionOffset);
 
             oldPositionOffset = positionOffset;
@@ -68,21 +71,43 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
         private void animateSelection(int position, float positionOffset) {
             View tab = tabsContainer.getLayoutManager().findViewByPosition(position);
-            TextView tabText = (TextView) tab.findViewById(R.id.tab_text);
+            if (tab != null) {
+                TextView tabText = (TextView) tab.findViewById(R.id.tab_text);
 
-            float currTextSize = 24f;
-            float targetSize = 16f;
+                float currTextSize = 24f;
+                float targetSize = 16f;
 
-            int startColor = ContextCompat.getColor(tabText.getContext(), android.R.color.white);
-            int targetColor = ContextCompat.getColor(tabText.getContext(), R.color.facyTabTextColor);
+                int startColor = ContextCompat.getColor(tabText.getContext(), android.R.color.white);
+                int targetColor = ContextCompat.getColor(tabText.getContext(), R.color.facyTabTextColor);
 
-            float size = currTextSize - ((currTextSize - targetSize) * positionOffset);
+                float size = currTextSize - ((currTextSize - targetSize) * positionOffset);
 
-            ArgbEvaluator evaluator = new ArgbEvaluator();
-            int color = (int) evaluator.evaluate(positionOffset, startColor, targetColor);
+                ArgbEvaluator evaluator = new ArgbEvaluator();
+                int color = (int) evaluator.evaluate(positionOffset, startColor, targetColor);
 
-            tabText.setTextSize(size);
-            tabText.setTextColor(color);
+                tabText.setTextSize(size);
+                tabText.setTextColor(color);
+            }
+
+            if (position < tabsContainer.getAdapter().getItemCount() - 1) {
+                View tab2 = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
+                TextView tabText2 = (TextView) tab2.findViewById(R.id.tab_text);
+
+                float currTextSize = 16f;
+                float targetSize = 24f;
+
+                int startColor = ContextCompat.getColor(tabText2.getContext(), R.color.facyTabTextColor);
+                int targetColor = ContextCompat.getColor(tabText2.getContext(), android.R.color.white);
+
+                float size = currTextSize - ((currTextSize - targetSize) * positionOffset);
+
+                ArgbEvaluator evaluator = new ArgbEvaluator();
+                int color = (int) evaluator.evaluate(positionOffset, startColor, targetColor);
+
+                tabText2.setTextSize(size);
+                tabText2.setTextColor(color);
+            }
+
         }
 
         @Override
