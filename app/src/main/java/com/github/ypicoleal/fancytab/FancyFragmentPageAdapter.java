@@ -2,7 +2,6 @@ package com.github.ypicoleal.fancytab;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.widget.ImageView;
 
 
 public abstract class FancyFragmentPageAdapter extends FragmentPagerAdapter {
@@ -10,10 +9,6 @@ public abstract class FancyFragmentPageAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-    public abstract String getPageImageURL(int position);
+    public abstract Object getPageImageURL(int position);
 
-
-    public interface ImageLoader{
-        public void loadImage(ImageView view, String url);
-    }
 }

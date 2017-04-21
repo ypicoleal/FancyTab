@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FancyTabLayout">
+        <attr name="tabFormat" format="enum">
+            <enum name="onlyText" value="1" />
+            <enum name="imgTitle" value="2" />
+            <enum name="onlyImg" value="3" />
+        </attr>
+        <attr name="circleImg" format="boolean" />
+    </declare-styleable>
+</resources>

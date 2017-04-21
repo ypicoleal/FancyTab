@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
         FancyTabLayout tabLayout = (FancyTabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setImageLoader(new FancyTabLayout.ImageLoader() {
+            @Override
+            public void loadImage(ImageView view, Object url) {
+                view.setImageResource((Integer) url);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -131,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public String getPageImageURL(int position) {
-            return null;
+        public Object getPageImageURL(int position) {
+            return R.drawable.profile;
         }
 
         @Override
@@ -145,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 10;
+            return 30;
         }
 
         @Override

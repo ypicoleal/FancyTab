@@ -9,17 +9,33 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewHolder>{
 
     private PagerAdapter pagerAdapter;
     private ListItemClickListener mOnClickListener;
-
+    private int tabFormat;
+    private boolean circleImg;
+    private FancyTabLayout.ImageLoader imageLoader;
     private int selected = 0;
 
-    FancyTabAdapter(PagerAdapter viewPager, ListItemClickListener mOnClickListener){
+    FancyTabAdapter(PagerAdapter viewPager, ListItemClickListener mOnClickListener, int tabFormat, boolean circleImg) {
         this.pagerAdapter = viewPager;
         this.mOnClickListener = mOnClickListener;
+        this.tabFormat = tabFormat;
+        this.circleImg = circleImg;
+    }
+
+    public void setImageLoader(FancyTabLayout.ImageLoader imageLoader) {
+        this.imageLoader = imageLoader;
+        notifyDataSetChanged();
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -33,8 +49,53 @@ class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewH
     public void onBindViewHolder(FancyTabViewHolder holder, int position) {
         CharSequence pageTitle = pagerAdapter.getPageTitle(position);
 
-        holder.tabImage.setVisibility(View.GONE);
+
+        switch (tabFormat) {
+            case FancyTabLayout.ONLYTEXT:
+                holder.tabImage.setVisibility(View.GONE);
+                holder.tabImageCircle.setVisibility(View.GONE);
+                holder.tabText.setVisibility(View.VISIBLE);
+                break;
+            default:
+                holder.tabText.setVisibility(View.GONE);
+                try {
+                    Object url = ((FancyFragmentPageAdapter) pagerAdapter).getPageImageURL(position);
+                    int imgSize = holder.tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_deselected_img_size);
+                    float opacity = 0.6f;
+                    if (selected == position) {
+                        imgSize = holder.tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_selected_img_size);
+                        opacity = 1;
+                    }
+                    if (circleImg) {
+                        holder.tabImage.setVisibility(View.GONE);
+                        holder.tabImageCircle.setVisibility(View.VISIBLE);
+
+                        holder.tabImageCircle.getLayoutParams().width = imgSize;
+                        holder.tabImageCircle.getLayoutParams().height = imgSize;
+                        holder.tabImageCircle.requestLayout();
+                        holder.tabImageCircle.setAlpha(opacity);
+
+                        imageLoader.loadImage(holder.tabImageCircle, url);
+                    } else {
+                        holder.tabImage.setVisibility(View.VISIBLE);
+                        holder.tabImageCircle.setVisibility(View.GONE);
+
+                        holder.tabImage.getLayoutParams().width = imgSize;
+                        holder.tabImage.getLayoutParams().height = imgSize;
+                        holder.tabImage.requestLayout();
+                        holder.tabImage.setAlpha(opacity);
+
+                        imageLoader.loadImage(holder.tabImage, url);
+                    }
+
+                } catch (ClassCastException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
         holder.tabText.setText(pageTitle);
+
 
         if (selected == position) {
             holder.tabText.setTextSize(24);
@@ -58,10 +119,12 @@ class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewH
 
         ImageView tabImage;
         TextView tabText;
+        CircleImageView tabImageCircle;
 
         FancyTabViewHolder(View itemView) {
             super(itemView);
             tabImage = (ImageView) itemView.findViewById(R.id.tab_image);
+            tabImageCircle = (CircleImageView) itemView.findViewById(R.id.tab_image_circle);
             tabText = (TextView) itemView.findViewById(R.id.tab_text);
             itemView.setOnClickListener(this);
         }

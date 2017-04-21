@@ -6,4 +6,16 @@
         android:id="@+id/tabs_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/fancy_title"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/fancy_selected_img_size"
+        android:layout_marginStart="@dimen/fancy_selected_img_size"
+        android:layout_marginTop="@dimen/fancy_deselected_img_size"
+        android:padding="18dp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 </FrameLayout>
