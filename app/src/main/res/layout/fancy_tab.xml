@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:padding="8dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -22,8 +21,9 @@
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:textColor="@color/facyTabTextColor"
         android:textStyle="bold" />
-</LinearLayout>
+</RelativeLayout>

@@ -14,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,45 +36,26 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private boolean circleImg;
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
-        float oldPositionOffset = 0;
-        float residual;
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            int currPosition = viewPager.getCurrentItem();
 
-            int firstItem = ((LinearLayoutManager) tabsContainer.getLayoutManager()).findFirstVisibleItemPosition();
+            View tab = tabsContainer.getLayoutManager().findViewByPosition(position);
+            if (tab != null) {
+                int viewWidth = -tab.getWidth();
 
-            View tab = tabsContainer.getLayoutManager().findViewByPosition(firstItem);
-            int viewWidth = tab.getWidth();
+                float targetX = (viewWidth * positionOffset);
 
-            if(oldPositionOffset == 0){
+                int scroll = (int) -(targetX - tab.getX());
 
-                residual = 0;
-                if (position != currPosition){
-                    oldPositionOffset = 1;
-                }
-            }
-
-            float scrollF = ((positionOffset - oldPositionOffset) * viewWidth) + residual;
-            residual = scrollF % 1;
-
-            int scroll = (int) scrollF;
-
-            if(positionOffset == 0){
-                tab = tabsContainer.getLayoutManager().findViewByPosition(position);
-                scroll = (int) tab.getX();
-            }
-
-            Log.i("scroll",  scrollF + ", " + scroll);
-
-            if (positionOffset == 0) {
-                tabsContainer.smoothScrollBy(scroll, 0);
-            } else {
                 tabsContainer.scrollBy(scroll, 0);
+            } else {
+                int firstItem = ((LinearLayoutManager) tabsContainer.getLayoutManager()).findFirstVisibleItemPosition();
+                tab = tabsContainer.getLayoutManager().findViewByPosition(firstItem);
+                int viewWidth = -tab.getWidth();
+                float scroll = viewWidth * (1 - positionOffset);
+                tabsContainer.scrollBy(Math.round(scroll), 0);
             }
-
-            Log.d("values", "current: " + currPosition + ", position: " + position + ", offset: " + positionOffset + " residual: " + residual);
 
             if (tabFormat == ONLYTEXT) {
                 animateSelectionText(position, positionOffset);
@@ -83,7 +63,9 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                 animateSelectionImg(position, positionOffset);
             }
 
-            oldPositionOffset = positionOffset;
+            if (positionOffset == 0) {
+                fancyTabAdapter.setSelected(position);
+            }
         }
 
         private void animateSelectionText(int position, float positionOffset) {
@@ -178,9 +160,6 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                 float opacity = startOpacity - ((startOpacity - targetOpacity) * positionOffset);
 
                 tabImage.setAlpha(opacity);
-            }
-            if (positionOffset == 0) {
-                fancyTabAdapter.setSelected(position);
             }
 
             if (tabFormat == IMGTITLE) {
