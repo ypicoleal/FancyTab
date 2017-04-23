@@ -35,10 +35,13 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private int tabFormat;
     private boolean circleImg;
 
+    private boolean canScroll = false;
+
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            canScroll = true;
 
             View tab = tabsContainer.getLayoutManager().findViewByPosition(position);
             if (tab != null) {
@@ -65,7 +68,12 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
             if (positionOffset == 0) {
                 fancyTabAdapter.setSelected(position);
+
+                int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem);
+                tabsContainer.setPadding(0, 0, padding, 0);
             }
+
+            canScroll = false;
         }
 
         private void animateSelectionText(int position, float positionOffset) {
@@ -245,7 +253,12 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
         View root = inflate(getContext(), R.layout.fancy_tab_layout, this);
         tabsContainer = (RecyclerView) root.findViewById(R.id.tabs_container);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return canScroll;
+            }
+        };
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         tabsContainer.setLayoutManager(layoutManager);
