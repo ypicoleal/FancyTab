@@ -8,4 +8,5 @@
     <dimen name="fancy_deselected_img_size">24dp</dimen>
     <dimen name="fancy_selected_img_size">80dp</dimen>
     <dimen name="fancy_padding_elem">8dp</dimen>
+    <dimen name="fancy_tab_paddin_start">16dp</dimen>
 </resources>

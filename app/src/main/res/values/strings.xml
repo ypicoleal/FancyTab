@@ -3,4 +3,15 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="fancy_tab_image">Tab Image</string>
+    <string name="long_text">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta porttitor tellus, sed aliquet ex congue at. Integer viverra non erat tristique sodales. Duis vestibulum purus sit amet est lacinia dapibus. Maecenas sed orci efficitur, lobortis justo vel, convallis sapien. Nulla facilisi. Aenean et mi eu lectus sagittis hendrerit sit amet id felis. Quisque iaculis diam eget velit fringilla molestie. Fusce ut iaculis tellus. Sed molestie iaculis nunc ut iaculis.
+
+Sed turpis tortor, pellentesque ac massa id, ultricies lacinia massa. Vestibulum fermentum porta placerat. Integer auctor nec eros at cursus. Sed eu risus turpis. Mauris ut volutpat quam. Morbi ultricies neque mi, in facilisis justo blandit a. In hac habitasse platea dictumst. Vivamus tincidunt, lectus sit amet dapibus consectetur, metus magna mattis erat, vitae porttitor diam lacus vitae mi. Duis quis scelerisque lectus. Suspendisse rhoncus condimentum orci in vehicula.
+
+Duis at orci non nulla placerat aliquam. Sed sodales a ante finibus efficitur. Praesent finibus in ipsum nec molestie. Mauris finibus ornare metus et eleifend. Aenean fermentum euismod sapien vitae suscipit. Morbi lacinia faucibus lectus ac malesuada. Cras ut nisl ut elit posuere dignissim eget ut ex. Quisque eleifend eget nunc vel fermentum. Integer mollis neque in elit luctus consequat. Aenean egestas finibus enim ut volutpat. Duis nec ullamcorper turpis. Ut ornare mollis tincidunt. Duis maximus euismod quam, id euismod metus placerat non. In hac habitasse platea dictumst. Fusce feugiat, massa vel placerat egestas, augue velit congue nunc, ac ultrices odio nibh a neque. Sed a tellus auctor, commodo enim at, volutpat purus.
+
+Nulla placerat ac justo ut accumsan. Suspendisse potenti. Donec ac auctor purus, et consectetur tellus. Sed eu massa a risus porttitor blandit. Nam purus turpis, malesuada eget dui sit amet, tempus vestibulum sapien. Vestibulum maximus sed nibh id consectetur. Nulla sagittis at ante at porta.
+
+Nulla commodo velit et leo facilisis, eget malesuada dui interdum. Vestibulum pharetra lorem vitae sem luctus, ac efficitur massa vehicula. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at dapibus libero, ut fermentum diam. Pellentesque ac ex varius, laoreet est consectetur, imperdiet mi. Etiam laoreet neque nec pretium venenatis. Donec at nisl et lorem maximus finibus. Praesent eget mi rhoncus, scelerisque sapien a, egestas lacus. Nullam ac diam ultrices, ultricies est quis, euismod eros.
+    </string>
 </resources>

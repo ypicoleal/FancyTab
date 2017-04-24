@@ -3,20 +3,27 @@ package com.github.ypicoleal.fancytab;
 import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StyleRes;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -31,6 +38,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private FancyTabAdapter fancyTabAdapter;
     private ImageLoader imageLoader;
     private TextView titleTV;
+    private RelativeLayout floattingTab;
 
     private int tabFormat;
     private boolean circleImg;
@@ -42,12 +50,13 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             canScroll = true;
-
+            int paddinStart = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_paddin_start);
             View tab = tabsContainer.getLayoutManager().findViewByPosition(position);
+
             if (tab != null) {
                 int viewWidth = -tab.getWidth();
 
-                float targetX = (viewWidth * positionOffset);
+                float targetX = paddinStart + (viewWidth * positionOffset);
 
                 int scroll = (int) -(targetX - tab.getX());
 
@@ -63,17 +72,62 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
             if (tabFormat == ONLYTEXT) {
                 animateSelectionText(position, positionOffset);
             } else {
+                setFloatingTabPosition(position, positionOffset);
                 animateSelectionImg(position, positionOffset);
             }
 
             if (positionOffset == 0) {
                 fancyTabAdapter.setSelected(position);
-
-                int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem);
-                tabsContainer.setPadding(0, 0, padding, 0);
+                int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
+                tabsContainer.setPadding(paddinStart, 0, padding, 0);
+            } else if (positionOffset > 0.8) {
+                tab = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
+                int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
+                tabsContainer.setPadding(paddinStart, 0, padding, 0);
             }
 
             canScroll = false;
+        }
+
+        private void setFloatingTabPosition(int position, float positionOffset) {
+
+            Log.d("offset", "" + positionOffset);
+
+            if (positionOffset <= 0.35 || positionOffset >= 0.65) {
+
+                floattingTab.setVisibility(INVISIBLE);
+
+                View currentPage = tabsContainer.getLayoutManager().findViewByPosition(position);
+
+                if (positionOffset >= 0.65) {
+                    currentPage = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
+                }
+
+
+                ImageView floatingImg = (ImageView) floattingTab.findViewById(R.id.tab_image_circle);
+                ImageView img = (ImageView) currentPage.findViewById(R.id.tab_image_circle);
+                if (!circleImg) {
+                    img = (ImageView) currentPage.findViewById(R.id.tab_image);
+                    floatingImg = (ImageView) floattingTab.findViewById(R.id.tab_image);
+                }
+
+                floatingImg.setImageDrawable(img.getDrawable());
+                ViewGroup.LayoutParams floatingImgLayoutParams = floatingImg.getLayoutParams();
+                floatingImgLayoutParams.width = img.getWidth();
+                floatingImgLayoutParams.height = img.getHeight();
+                floatingImg.requestLayout();
+                floatingImg.setColorFilter(Color.parseColor("#FF4081"));
+                floatingImg.setAlpha(img.getAlpha());
+                //img.setAlpha(0f);
+
+                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) floattingTab.getLayoutParams();
+                layoutParams.leftMargin = (int) currentPage.getX();
+                layoutParams.topMargin = (int) (currentPage.getY() + tabsContainer.getY() + getY());
+
+                floattingTab.setVisibility(VISIBLE);
+            } else {
+                floattingTab.setVisibility(GONE);
+            }
         }
 
         private void animateSelectionText(int position, float positionOffset) {
@@ -176,7 +230,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                     float opacity = 1 - (positionOffset * 10);
                     float percent = 1 - (positionOffset * 3);
 
-                    int currMargin = getContext().getResources().getDimensionPixelOffset(R.dimen.fancy_selected_img_size);
+                    int currMargin = getContext().getResources().getDimensionPixelOffset(R.dimen.fancy_selected_img_size) + getResources().getDimensionPixelOffset(R.dimen.fancy_tab_paddin_start);
                     int tagetMargin = currMargin - titleTV.getWidth();
 
                     int margin = (int) (currMargin - ((currMargin - tagetMargin) * (1 - percent)));
@@ -192,7 +246,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                     float opacity = 1 - ((1 - positionOffset) * 10);
                     float percent = 1 - ((1 - positionOffset) * 3);
 
-                    int currMargin = getContext().getResources().getDimensionPixelOffset(R.dimen.fancy_selected_img_size);
+                    int currMargin = getContext().getResources().getDimensionPixelOffset(R.dimen.fancy_selected_img_size) + getResources().getDimensionPixelOffset(R.dimen.fancy_tab_paddin_start);
                     int tagetMargin = currMargin + titleTV.getWidth();
 
                     int margin = (int) (currMargin - ((currMargin - tagetMargin) * (1 - percent)));
@@ -215,6 +269,13 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
         @Override
         public void onPageScrollStateChanged(int state) {
 
+        }
+    };
+
+    private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            //Log.i("offset", "" + verticalOffset + ",  " + appBarLayout.getTotalScrollRange());
         }
     };
 
@@ -301,14 +362,48 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (tabFormat != ONLYTEXT && getParent().getClass().equals(AppBarLayout.class)) {
+            setAppbarEvent();
+        }
+
+        if (tabFormat == ONLYTEXT) {
+            View root = getChildAt(0);
+            root.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            root.requestLayout();
+
+            tabsContainer.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            tabsContainer.requestLayout();
+        }
+    }
+
+    private void setAppbarEvent() {
+        AppBarLayout appBar = (AppBarLayout) getParent();
+        appBar.addOnOffsetChangedListener(onOffsetChangedListener);
+
+        if (appBar.getParent().getClass().equals(CoordinatorLayout.class)) {
+            CoordinatorLayout rootLayout = (CoordinatorLayout) appBar.getParent();
+            LayoutInflater inflater = LayoutInflater.from(rootLayout.getContext());
+            floattingTab = (RelativeLayout) inflater.inflate(R.layout.fancy_floating_tab, rootLayout, false);
+            rootLayout.addView(floattingTab);
+        }
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (viewPager != null){
             viewPager.removeOnPageChangeListener(pageChangeListener);
         }
+
+        if (tabFormat != ONLYTEXT && getParent().getClass().equals(AppBarLayout.class)) {
+            AppBarLayout appBar = (AppBarLayout) getParent();
+            appBar.removeOnOffsetChangedListener(onOffsetChangedListener);
+        }
     }
 
     public interface ImageLoader {
-        public void loadImage(ImageView view, Object url);
+        void loadImage(ImageView view, Object url);
     }
 }
