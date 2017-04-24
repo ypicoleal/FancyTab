@@ -38,12 +38,15 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private FancyTabAdapter fancyTabAdapter;
     private ImageLoader imageLoader;
     private TextView titleTV;
+
+    //TODO quitar el elemento flotante ya que no es necesario para la vuelta
     private RelativeLayout floattingTab;
 
     private int tabFormat;
     private boolean circleImg;
 
     private boolean canScroll = false;
+    private boolean isFloating = false;
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
 
@@ -72,14 +75,17 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
             if (tabFormat == ONLYTEXT) {
                 animateSelectionText(position, positionOffset);
             } else {
-                setFloatingTabPosition(position, positionOffset);
                 animateSelectionImg(position, positionOffset);
+                //setFloatingTabPosition(position, positionOffset);
             }
 
             if (positionOffset == 0) {
                 fancyTabAdapter.setSelected(position);
                 int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
                 tabsContainer.setPadding(paddinStart, 0, padding, 0);
+                if (isFloating) {
+                    fixFloatingTabs();
+                }
             } else if (positionOffset > 0.8) {
                 tab = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
                 int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
@@ -94,13 +100,14 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
             Log.d("offset", "" + positionOffset);
 
             if (positionOffset <= 0.35 || positionOffset >= 0.65) {
-
-                floattingTab.setVisibility(INVISIBLE);
-
                 View currentPage = tabsContainer.getLayoutManager().findViewByPosition(position);
+
+                int paddinStart = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_paddin_start);
+                float targetX = -(currentPage.getWidth() * positionOffset) + paddinStart;
 
                 if (positionOffset >= 0.65) {
                     currentPage = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
+                    targetX = (currentPage.getWidth() * (1 - positionOffset)) + paddinStart;
                 }
 
 
@@ -118,11 +125,12 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                 floatingImg.requestLayout();
                 floatingImg.setColorFilter(Color.parseColor("#FF4081"));
                 floatingImg.setAlpha(img.getAlpha());
-                //img.setAlpha(0f);
+                img.setAlpha(0f);
 
                 CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) floattingTab.getLayoutParams();
-                layoutParams.leftMargin = (int) currentPage.getX();
+                layoutParams.leftMargin = (int) targetX;
                 layoutParams.topMargin = (int) (currentPage.getY() + tabsContainer.getY() + getY());
+                floattingTab.requestLayout();
 
                 floattingTab.setVisibility(VISIBLE);
             } else {
@@ -308,6 +316,13 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
         }
     }
 
+    void fixFloatingTabs() {
+        View tabs = (View) tabsContainer.getParent();
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) tabs.getLayoutParams();
+        layoutParams.topMargin = (int) getY();
+        tabs.requestLayout();
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -386,7 +401,19 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
             CoordinatorLayout rootLayout = (CoordinatorLayout) appBar.getParent();
             LayoutInflater inflater = LayoutInflater.from(rootLayout.getContext());
             floattingTab = (RelativeLayout) inflater.inflate(R.layout.fancy_floating_tab, rootLayout, false);
+
+            View tabs = getChildAt(0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                tabs.setElevation(getResources().getDimensionPixelOffset(R.dimen.tabs_elevation));
+            }
+
+            removeView(tabs);
+            rootLayout.addView(tabs);
             rootLayout.addView(floattingTab);
+
+            getLayoutParams().height = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_layout_height);
+            requestLayout();
+            isFloating = true;
         }
     }
 

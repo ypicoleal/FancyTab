@@ -9,4 +9,7 @@
     <dimen name="fancy_selected_img_size">80dp</dimen>
     <dimen name="fancy_padding_elem">8dp</dimen>
     <dimen name="fancy_tab_paddin_start">16dp</dimen>
+    <dimen name="tabs_elevation">8dp</dimen>
+
+    <dimen name="fancy_tab_layout_height">72dp</dimen>
 </resources>

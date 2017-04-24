@@ -7,7 +7,7 @@
     android:layout_marginLeft="@dimen/fancy_tab_paddin_start"
     android:layout_marginStart="@dimen/fancy_tab_paddin_start"
     android:layout_marginTop="?attr/actionBarSize"
-    android:elevation="8dp"
+    android:elevation="@dimen/tabs_elevation"
     android:padding="8dp"
     android:visibility="gone"
     tools:targetApi="lollipop">
