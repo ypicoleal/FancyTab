@@ -157,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
+            if (position == 1) {
+                return "Very long title";
+            }
 
             return "Section " + (position + 1);
         }

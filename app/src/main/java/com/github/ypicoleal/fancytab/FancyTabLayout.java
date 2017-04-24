@@ -3,7 +3,6 @@ package com.github.ypicoleal.fancytab;
 import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -17,13 +16,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -38,9 +34,6 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private FancyTabAdapter fancyTabAdapter;
     private ImageLoader imageLoader;
     private TextView titleTV;
-
-    //TODO quitar el elemento flotante ya que no es necesario para la vuelta
-    private RelativeLayout floattingTab;
 
     private int tabFormat;
     private boolean circleImg;
@@ -76,7 +69,6 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                 animateSelectionText(position, positionOffset);
             } else {
                 animateSelectionImg(position, positionOffset);
-                //setFloatingTabPosition(position, positionOffset);
             }
 
             if (positionOffset == 0) {
@@ -86,56 +78,17 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                 if (isFloating) {
                     fixFloatingTabs();
                 }
-            } else if (positionOffset > 0.8) {
+            } else {
+                int width = tab.getWidth();
                 tab = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
-                int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
+                if (tab.getWidth() > width) {
+                    width = tab.getWidth();
+                }
+                int padding = tabsContainer.getWidth() - width - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
                 tabsContainer.setPadding(paddinStart, 0, padding, 0);
             }
 
             canScroll = false;
-        }
-
-        private void setFloatingTabPosition(int position, float positionOffset) {
-
-            Log.d("offset", "" + positionOffset);
-
-            if (positionOffset <= 0.35 || positionOffset >= 0.65) {
-                View currentPage = tabsContainer.getLayoutManager().findViewByPosition(position);
-
-                int paddinStart = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_paddin_start);
-                float targetX = -(currentPage.getWidth() * positionOffset) + paddinStart;
-
-                if (positionOffset >= 0.65) {
-                    currentPage = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
-                    targetX = (currentPage.getWidth() * (1 - positionOffset)) + paddinStart;
-                }
-
-
-                ImageView floatingImg = (ImageView) floattingTab.findViewById(R.id.tab_image_circle);
-                ImageView img = (ImageView) currentPage.findViewById(R.id.tab_image_circle);
-                if (!circleImg) {
-                    img = (ImageView) currentPage.findViewById(R.id.tab_image);
-                    floatingImg = (ImageView) floattingTab.findViewById(R.id.tab_image);
-                }
-
-                floatingImg.setImageDrawable(img.getDrawable());
-                ViewGroup.LayoutParams floatingImgLayoutParams = floatingImg.getLayoutParams();
-                floatingImgLayoutParams.width = img.getWidth();
-                floatingImgLayoutParams.height = img.getHeight();
-                floatingImg.requestLayout();
-                floatingImg.setColorFilter(Color.parseColor("#FF4081"));
-                floatingImg.setAlpha(img.getAlpha());
-                img.setAlpha(0f);
-
-                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) floattingTab.getLayoutParams();
-                layoutParams.leftMargin = (int) targetX;
-                layoutParams.topMargin = (int) (currentPage.getY() + tabsContainer.getY() + getY());
-                floattingTab.requestLayout();
-
-                floattingTab.setVisibility(VISIBLE);
-            } else {
-                floattingTab.setVisibility(GONE);
-            }
         }
 
         private void animateSelectionText(int position, float positionOffset) {
@@ -399,8 +352,6 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
         if (appBar.getParent().getClass().equals(CoordinatorLayout.class)) {
             CoordinatorLayout rootLayout = (CoordinatorLayout) appBar.getParent();
-            LayoutInflater inflater = LayoutInflater.from(rootLayout.getContext());
-            floattingTab = (RelativeLayout) inflater.inflate(R.layout.fancy_floating_tab, rootLayout, false);
 
             View tabs = getChildAt(0);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -409,7 +360,6 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
             removeView(tabs);
             rootLayout.addView(tabs);
-            rootLayout.addView(floattingTab);
 
             getLayoutParams().height = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_layout_height);
             requestLayout();
