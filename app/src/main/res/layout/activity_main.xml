@@ -5,6 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
     tools:context="com.github.ypicoleal.fancytab.MainActivity">
 
@@ -12,17 +13,35 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!-- TODO (1) create a header that looks like the 2 invites header -->
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            app:layout_scrollFlags="scroll|enterAlways">
 
-        </android.support.v7.widget.Toolbar>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:alpha="0.6"
+                android:src="@drawable/ic_tumblr_letter_logo"
+                android:tint="@android:color/white" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Display1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Following"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
 
         <com.github.ypicoleal.fancytablayout.FancyTabLayout
             android:id="@+id/tabs"
