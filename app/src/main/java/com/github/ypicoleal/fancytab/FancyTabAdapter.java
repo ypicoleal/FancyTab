@@ -14,6 +14,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewHolder>{
 
+    float opacity = 0.6f;
+    int selectedImgSize = -1;
     private PagerAdapter pagerAdapter;
     private ListItemClickListener mOnClickListener;
     private int tabFormat;
@@ -35,6 +37,16 @@ class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewH
 
     public void setSelected(int selected) {
         this.selected = selected;
+        notifyDataSetChanged();
+    }
+
+    public void setOpacity(float opacity) {
+        this.opacity = opacity;
+        notifyDataSetChanged();
+    }
+
+    public void setSelectedImgSize(int selectedImgSize) {
+        this.selectedImgSize = selectedImgSize;
         notifyDataSetChanged();
     }
 
@@ -61,9 +73,13 @@ class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewH
                 try {
                     Object url = ((FancyFragmentPageAdapter) pagerAdapter).getPageImageURL(position);
                     int imgSize = holder.tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_deselected_img_size);
-                    float opacity = 0.6f;
+                    float opacity = this.opacity;
                     if (selected == position) {
-                        imgSize = holder.tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_selected_img_size);
+                        if (imgSize != -1) {
+                            imgSize = this.selectedImgSize;
+                        } else {
+                            imgSize = holder.tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_selected_img_size);
+                        }
                         opacity = 1;
                     }
                     if (circleImg) {

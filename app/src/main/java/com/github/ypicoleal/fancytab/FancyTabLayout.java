@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -41,10 +42,16 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private boolean canScroll = false;
     private boolean isFloating = false;
 
+    private float appBarOffset = -1;
+    private int currentFloatMargin = -1;
+
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            Log.i("offset", "" + positionOffset);
+
             canScroll = true;
             int paddinStart = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_paddin_start);
             View tab = tabsContainer.getLayoutManager().findViewByPosition(position);
@@ -75,6 +82,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                 fancyTabAdapter.setSelected(position);
                 int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
                 tabsContainer.setPadding(paddinStart, 0, padding, 0);
+
                 if (isFloating) {
                     fixFloatingTabs();
                 }
@@ -236,7 +244,15 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
         @Override
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-            //Log.i("offset", "" + verticalOffset + ",  " + appBarLayout.getTotalScrollRange());
+            float offset = (float) -verticalOffset / appBarLayout.getTotalScrollRange();
+            if (appBarOffset != offset) {
+                appBarOffset = offset;
+                setFloatingTop();
+                setSelectedImgSize();
+                fancyTabAdapter.setOpacity(0.6f * (1 - appBarOffset));
+                titleTV.setAlpha(1 - appBarOffset);
+            }
+
         }
     };
 
@@ -270,10 +286,39 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     }
 
     void fixFloatingTabs() {
+        currentFloatMargin = (int) getY();
+        setFloatingTop();
+    }
+
+    void setFloatingTop() {
+
+        int targetMargin = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_margin_top);
+
+        int margin = (int) (currentFloatMargin + ((targetMargin - currentFloatMargin) * appBarOffset));
+
         View tabs = (View) tabsContainer.getParent();
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) tabs.getLayoutParams();
-        layoutParams.topMargin = (int) getY();
+        layoutParams.topMargin = margin;
         tabs.requestLayout();
+    }
+
+    void setSelectedImgSize() {
+        View tab = tabsContainer.getLayoutManager().findViewByPosition(viewPager.getCurrentItem());
+        if (tab != null) {
+            int img = R.id.tab_image;
+            if (circleImg) {
+                img = R.id.tab_image_circle;
+            }
+
+            ImageView tabImage = (ImageView) tab.findViewById(img);
+
+            int currSize = tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_selected_img_size);
+            int targetSize = tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_offset_img_size);
+
+            int size = (int) (currSize - ((currSize - targetSize) * appBarOffset));
+
+            fancyTabAdapter.setSelectedImgSize(size);
+        }
     }
 
     @Override
