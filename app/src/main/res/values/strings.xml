@@ -2,7 +2,6 @@
     <string name="app_name">Fancy Tab</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="fancy_tab_image">Tab Image</string>
     <string name="long_text">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta porttitor tellus, sed aliquet ex congue at. Integer viverra non erat tristique sodales. Duis vestibulum purus sit amet est lacinia dapibus. Maecenas sed orci efficitur, lobortis justo vel, convallis sapien. Nulla facilisi. Aenean et mi eu lectus sagittis hendrerit sit amet id felis. Quisque iaculis diam eget velit fringilla molestie. Fusce ut iaculis tellus. Sed molestie iaculis nunc ut iaculis.
 

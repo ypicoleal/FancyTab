@@ -1,4 +1,4 @@
-package com.github.ypicoleal.fancytab;
+package com.github.ypicoleal.fancytablayout;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;

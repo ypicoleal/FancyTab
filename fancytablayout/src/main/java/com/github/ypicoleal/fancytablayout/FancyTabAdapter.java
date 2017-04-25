@@ -1,4 +1,4 @@
-package com.github.ypicoleal.fancytab;
+package com.github.ypicoleal.fancytablayout;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -14,8 +14,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewHolder>{
 
-    float opacity = 0.6f;
-    int selectedImgSize = -1;
+    private float opacity = 0.6f;
+    private int selectedImgSize = -1;
     private PagerAdapter pagerAdapter;
     private ListItemClickListener mOnClickListener;
     private int tabFormat;
@@ -30,22 +30,22 @@ class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewH
         this.circleImg = circleImg;
     }
 
-    public void setImageLoader(FancyTabLayout.ImageLoader imageLoader) {
+    void setImageLoader(FancyTabLayout.ImageLoader imageLoader) {
         this.imageLoader = imageLoader;
         notifyDataSetChanged();
     }
 
-    public void setSelected(int selected) {
+    void setSelected(int selected) {
         this.selected = selected;
         notifyDataSetChanged();
     }
 
-    public void setOpacity(float opacity) {
+    void setOpacity(float opacity) {
         this.opacity = opacity;
         notifyDataSetChanged();
     }
 
-    public void setSelectedImgSize(int selectedImgSize) {
+    void setSelectedImgSize(int selectedImgSize) {
         this.selectedImgSize = selectedImgSize;
         notifyDataSetChanged();
     }

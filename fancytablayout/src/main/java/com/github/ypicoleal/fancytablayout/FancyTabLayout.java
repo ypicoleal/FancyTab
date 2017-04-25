@@ -1,4 +1,4 @@
-package com.github.ypicoleal.fancytab;
+package com.github.ypicoleal.fancytablayout;
 
 import android.animation.ArgbEvaluator;
 import android.content.Context;

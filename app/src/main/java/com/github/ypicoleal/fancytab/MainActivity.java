@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.ypicoleal.fancytablayout.FancyTabLayout;
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FancyFragmentPageAdapter {
+    public class SectionsPagerAdapter extends com.github.ypicoleal.fancytablayout.FancyFragmentPageAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

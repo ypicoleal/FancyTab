@@ -24,7 +24,7 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <com.github.ypicoleal.fancytab.FancyTabLayout
+        <com.github.ypicoleal.fancytablayout.FancyTabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
