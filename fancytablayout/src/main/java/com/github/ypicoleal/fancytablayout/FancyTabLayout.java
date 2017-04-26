@@ -41,7 +41,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private boolean canScroll = false;
     private boolean isFloating = false;
 
-    private float appBarOffset = 0;
+    private float appBarOffset = -1;
     private int currentFloatMargin = -1;
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {

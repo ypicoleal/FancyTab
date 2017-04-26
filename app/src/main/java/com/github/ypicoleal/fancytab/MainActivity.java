@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.ypicoleal.fancytablayout.FancyFragmentPageAdapter;
 import com.github.ypicoleal.fancytablayout.FancyTabLayout;
@@ -58,13 +57,12 @@ public class MainActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        //setViewPager();
-
+        setViewPager();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setViewPager();
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -72,47 +70,72 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //TODO (2) pick some ramdom blogs from tumblr and make a list width it
-    //TODO (3) make the profile photos be the real ones from tumblr
-    //TODO: (4) make a list with the content of those blogs
-
-
     public void setViewPager() {
+        String blogsJson = "[\n" +
+                "  {\n" +
+                "    \"title\": \"Art of Olivia Margraf-Posta\",\n" +
+                "    \"url\": \"sketcholivia.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"Birdstonshire\",\n" +
+                "    \"url\": \"lanxin.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"mslovejoy\",\n" +
+                "    \"url\": \"www.mslovejoy.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"M - O S H U N (motion)\",\n" +
+                "    \"url\": \"m-oshun.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"'JHN CARDONA ART'\",\n" +
+                "    \"url\": \"ilustradore.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"It's a beautiful world\",\n" +
+                "    \"url\": \"visitheworld.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"Kelsey Beckett Illustration\",\n" +
+                "    \"url\": \"kelseybeckett.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"Patricia Martin Photography\",\n" +
+                "    \"url\": \"patriciamartinphotography.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"Stylish Homes\",\n" +
+                "    \"url\": \"stylish-homes.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"sixpenceee\",\n" +
+                "    \"blog\": \"sixpenceee.com\"\n" +
+                "  }\n" +
+                "]";
+        try {
+            blogs = new JSONArray(blogsJson);
+            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        String url = getResources().getString(R.string.blogs_urls);
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                blogs = response;
+            // Set up the ViewPager with the sections adapter.
+            mViewPager = (ViewPager) findViewById(R.id.container);
+            mViewPager.setAdapter(mSectionsPagerAdapter);
 
-                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-                // Set up the ViewPager with the sections adapter.
-                mViewPager = (ViewPager) findViewById(R.id.container);
-                mViewPager.setAdapter(mSectionsPagerAdapter);
-
-                FancyTabLayout tabLayout = (FancyTabLayout) findViewById(R.id.tabs);
-                tabLayout.setImageLoader(new FancyTabLayout.ImageLoader() {
-                    @Override
-                    public void loadImage(ImageView view, Object url) {
-                        Picasso
-                                .with(MainActivity.this)
-                                .load((String) url)
-                                .placeholder(R.drawable.cube_closed_128)
-                                .into(view);
-                    }
-                });
-                tabLayout.setupWithViewPager(mViewPager);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Activities", error.toString());
-            }
-        });
-
-        VolleySingleton.getInstance(this).addToRequestQueue(request);
+            FancyTabLayout tabLayout = (FancyTabLayout) findViewById(R.id.tabs);
+            tabLayout.setImageLoader(new FancyTabLayout.ImageLoader() {
+                @Override
+                public void loadImage(ImageView view, Object url) {
+                    Picasso
+                            .with(MainActivity.this)
+                            .load((String) url)
+                            .placeholder(R.drawable.cube_closed_128)
+                            .into(view);
+                }
+            });
+            tabLayout.setupWithViewPager(mViewPager);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
