@@ -13,4 +13,10 @@ Nulla placerat ac justo ut accumsan. Suspendisse potenti. Donec ac auctor purus,
 
 Nulla commodo velit et leo facilisis, eget malesuada dui interdum. Vestibulum pharetra lorem vitae sem luctus, ac efficitur massa vehicula. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at dapibus libero, ut fermentum diam. Pellentesque ac ex varius, laoreet est consectetur, imperdiet mi. Etiam laoreet neque nec pretium venenatis. Donec at nisl et lorem maximus finibus. Praesent eget mi rhoncus, scelerisque sapien a, egestas lacus. Nullam ac diam ultrices, ultricies est quis, euismod eros.
     </string>
+
+    <string name="blogs_urls">https://raw.githubusercontent.com/ypicoleal/FancyTab/master/demo_blogs.json</string>
+    <string name="tumblr_api_url">https://api.tumblr.com/v2/blog/%1$s/posts/photo?api_key=SE8D0iN9tfSFXVJLzkxGFS12GL3bzVYyd4m5NSOBAbQ8uSLYJc</string>
+    <string name="tumblr_avatar">https://api.tumblr.com/v2/blog/%1$s/avatar/512</string>
+    <string name="note_count">%1$s notas</string>
+    <string name="post_photo">Post Photo</string>
 </resources>

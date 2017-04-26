@@ -60,8 +60,6 @@ class FancyTabAdapter extends RecyclerView.Adapter<FancyTabAdapter.FancyTabViewH
     @Override
     public void onBindViewHolder(FancyTabViewHolder holder, int position) {
         CharSequence pageTitle = pagerAdapter.getPageTitle(position);
-
-
         switch (tabFormat) {
             case FancyTabLayout.ONLYTEXT:
                 holder.tabImage.setVisibility(View.GONE);

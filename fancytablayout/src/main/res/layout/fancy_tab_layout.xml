@@ -19,6 +19,8 @@
         android:layout_marginLeft="@dimen/fancy_selected_img_size"
         android:layout_marginStart="@dimen/fancy_selected_img_size"
         android:layout_marginTop="40dp"
+        android:ellipsize="marquee"
+        android:maxLines="1"
         android:paddingEnd="16dp"
         android:paddingLeft="24dp"
         android:paddingRight="16dp"

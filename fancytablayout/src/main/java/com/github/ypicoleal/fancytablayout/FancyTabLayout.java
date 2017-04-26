@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -42,15 +41,13 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
     private boolean canScroll = false;
     private boolean isFloating = false;
 
-    private float appBarOffset = -1;
+    private float appBarOffset = 0;
     private int currentFloatMargin = -1;
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            Log.i("offset", "" + positionOffset);
 
             canScroll = true;
             int paddinStart = getResources().getDimensionPixelOffset(R.dimen.fancy_tab_paddin_start);
@@ -169,28 +166,30 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
             if (position < tabsContainer.getAdapter().getItemCount() - 1) {
                 View tab2 = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
-                int img = R.id.tab_image;
-                if (circleImg) {
-                    img = R.id.tab_image_circle;
+                if (tab2 != null) {
+                    int img = R.id.tab_image;
+                    if (circleImg) {
+                        img = R.id.tab_image_circle;
+                    }
+
+                    ImageView tabImage = (ImageView) tab2.findViewById(img);
+
+                    int currSize = tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_deselected_img_size);
+                    float targetSize = tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_selected_img_size);
+
+                    float startOpacity = 0.6f;
+                    float targetOpacity = 1f;
+
+                    int size = (int) (currSize - ((currSize - targetSize) * positionOffset));
+
+                    tabImage.getLayoutParams().width = size;
+                    tabImage.getLayoutParams().height = size;
+                    tabImage.requestLayout();
+
+                    float opacity = startOpacity - ((startOpacity - targetOpacity) * positionOffset);
+
+                    tabImage.setAlpha(opacity);
                 }
-
-                ImageView tabImage = (ImageView) tab2.findViewById(img);
-
-                int currSize = tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_deselected_img_size);
-                float targetSize = tabImage.getContext().getResources().getDimensionPixelSize(R.dimen.fancy_selected_img_size);
-
-                float startOpacity = 0.6f;
-                float targetOpacity = 1f;
-
-                int size = (int) (currSize - ((currSize - targetSize) * positionOffset));
-
-                tabImage.getLayoutParams().width = size;
-                tabImage.getLayoutParams().height = size;
-                tabImage.requestLayout();
-
-                float opacity = startOpacity - ((startOpacity - targetOpacity) * positionOffset);
-
-                tabImage.setAlpha(opacity);
             }
 
             if (tabFormat == IMGTITLE) {
@@ -247,12 +246,13 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
             float offset = (float) -verticalOffset / appBarLayout.getTotalScrollRange();
             if (appBarOffset != offset) {
                 appBarOffset = offset;
-                setFloatingTop();
-                setSelectedImgSize();
-                fancyTabAdapter.setOpacity(0.6f * (1 - appBarOffset));
-                titleTV.setAlpha(1 - appBarOffset);
+                if (viewPager != null) {
+                    setFloatingTop();
+                    setSelectedImgSize();
+                    fancyTabAdapter.setOpacity(0.6f * (1 - appBarOffset));
+                    titleTV.setAlpha(1 - appBarOffset);
+                }
             }
-
         }
     };
 
@@ -358,7 +358,9 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
         if (tabsContainer != null){
             tabsContainer.setAdapter(fancyTabAdapter);
         }
+
         this.viewPager.addOnPageChangeListener(pageChangeListener);
+
     }
 
     public void setImageLoader(ImageLoader imageLoader) {
@@ -393,7 +395,6 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
     private void setAppbarEvent() {
         AppBarLayout appBar = (AppBarLayout) getParent();
-        appBar.addOnOffsetChangedListener(onOffsetChangedListener);
 
         if (appBar.getParent().getClass().equals(CoordinatorLayout.class)) {
             CoordinatorLayout rootLayout = (CoordinatorLayout) appBar.getParent();
@@ -410,6 +411,8 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
             requestLayout();
             isFloating = true;
         }
+
+        appBar.addOnOffsetChangedListener(onOffsetChangedListener);
     }
 
     @Override
