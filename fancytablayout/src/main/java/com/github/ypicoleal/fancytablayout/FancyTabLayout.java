@@ -250,7 +250,9 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                     setFloatingTop();
                     setSelectedImgSize();
                     fancyTabAdapter.setOpacity(0.6f * (1 - appBarOffset));
-                    titleTV.setAlpha(1 - appBarOffset);
+                    if (titleTV != null) {
+                        titleTV.setAlpha(1 - appBarOffset);
+                    }
                 }
             }
         }
