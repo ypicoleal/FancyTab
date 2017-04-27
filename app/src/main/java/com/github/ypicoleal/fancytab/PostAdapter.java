@@ -1,11 +1,16 @@
 package com.github.ypicoleal.fancytab;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,10 +67,19 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
             }
             JSONArray photos = post.getJSONArray("photos");
 
+            WindowManager wm = (WindowManager) holder.photos.getContext().getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            Log.d("photos", size.x + ", " + size.y);
             for (int i = 0; i < photos.length(); i++) {
                 JSONObject photoJson = photos.getJSONObject(i);
                 ImageView photo;
                 String photoUrl = photoJson.getJSONObject("original_size").getString("url");
+                if (photoJson.getJSONArray("alt_sizes").length() > 1) {
+                    photoUrl = photoJson.getJSONArray("alt_sizes").getJSONObject(1).getString("url");
+                }
                 if (i < holder.photos.getChildCount()) {
                     photo = (ImageView) holder.photos.getChildAt(i);
                 } else {
@@ -90,14 +104,11 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
     @Override
     public int getItemCount() {
-
-        int count = 0;
         try {
-            count = posts.length();
+            return posts.length();
         } catch (NullPointerException ex) {
-            ex.printStackTrace();
+            return 0;
         }
-        return count;
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder {

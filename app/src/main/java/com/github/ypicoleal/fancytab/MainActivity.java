@@ -73,6 +73,18 @@ public class MainActivity extends AppCompatActivity {
     public void setViewPager() {
         String blogsJson = "[\n" +
                 "  {\n" +
+                "    \"title\": \"It's a beautiful world\",\n" +
+                "    \"url\": \"visitheworld.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"Kelsey Beckett Illustration\",\n" +
+                "    \"url\": \"kelseybeckett.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"Patricia Martin Photography\",\n" +
+                "    \"url\": \"patriciamartinphotography.tumblr.com\"\n" +
+                "  },\n" +
+                "  {\n" +
                 "    \"title\": \"Art of Olivia Margraf-Posta\",\n" +
                 "    \"url\": \"sketcholivia.tumblr.com\"\n" +
                 "  },\n" +
@@ -91,18 +103,6 @@ public class MainActivity extends AppCompatActivity {
                 "  {\n" +
                 "    \"title\": \"'JHN CARDONA ART'\",\n" +
                 "    \"url\": \"ilustradore.tumblr.com\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"title\": \"It's a beautiful world\",\n" +
-                "    \"url\": \"visitheworld.tumblr.com\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"title\": \"Kelsey Beckett Illustration\",\n" +
-                "    \"url\": \"kelseybeckett.tumblr.com\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"title\": \"Patricia Martin Photography\",\n" +
-                "    \"url\": \"patriciamartinphotography.tumblr.com\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"title\": \"Stylish Homes\",\n" +

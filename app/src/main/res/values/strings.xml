@@ -19,4 +19,5 @@ Nulla commodo velit et leo facilisis, eget malesuada dui interdum. Vestibulum ph
     <string name="tumblr_avatar">https://api.tumblr.com/v2/blog/%1$s/avatar/512</string>
     <string name="note_count">%1$s notas</string>
     <string name="post_photo">Post Photo</string>
+    <string name="title_activity_tab">TabActivity</string>
 </resources>
