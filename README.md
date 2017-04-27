@@ -87,7 +87,7 @@ then add the dependency to your project build.gradle:
 ```groovy
 dependencies {
     ...
-    compile 'com.github.ypicoleal:FancyTab:0.0.1'
+    compile 'com.github.ypicoleal:FancyTab:0.0.2'
 }
 ```
 
