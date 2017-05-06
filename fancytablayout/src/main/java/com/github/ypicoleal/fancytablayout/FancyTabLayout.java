@@ -37,6 +37,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
 
     private int tabFormat;
     private boolean circleImg;
+    private boolean isFixed;
 
     private boolean canScroll = false;
     private boolean isFloating = false;
@@ -75,22 +76,24 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
                 animateSelectionImg(position, positionOffset);
             }
 
-            if (positionOffset == 0) {
-                fancyTabAdapter.setSelected(position);
-                int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
-                tabsContainer.setPadding(paddinStart, 0, padding, 0);
+            if (!isFixed) {
+                if (positionOffset == 0) {
+                    fancyTabAdapter.setSelected(position);
+                    int padding = tabsContainer.getWidth() - tab.getWidth() - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
+                    tabsContainer.setPadding(paddinStart, 0, padding, 0);
 
-                if (isFloating) {
-                    fixFloatingTabs();
+                    if (isFloating) {
+                        fixFloatingTabs();
+                    }
+                } else {
+                    int width = tab.getWidth();
+                    tab = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
+                    if (tab.getWidth() > width) {
+                        width = tab.getWidth();
+                    }
+                    int padding = tabsContainer.getWidth() - width - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
+                    tabsContainer.setPadding(paddinStart, 0, padding, 0);
                 }
-            } else {
-                int width = tab.getWidth();
-                tab = tabsContainer.getLayoutManager().findViewByPosition(position + 1);
-                if (tab.getWidth() > width) {
-                    width = tab.getWidth();
-                }
-                int padding = tabsContainer.getWidth() - width - getResources().getDimensionPixelOffset(R.dimen.fancy_padding_elem) - paddinStart;
-                tabsContainer.setPadding(paddinStart, 0, padding, 0);
             }
 
             canScroll = false;
@@ -283,6 +286,7 @@ public class FancyTabLayout extends FrameLayout implements FancyTabAdapter.ListI
         if (array != null) {
             tabFormat = array.getInt(R.styleable.FancyTabLayout_tabFormat, 1);
             circleImg = array.getBoolean(R.styleable.FancyTabLayout_circleImg, true);
+            isFixed = array.getBoolean(R.styleable.FancyTabLayout_isFixed, false);
             array.recycle();
         }
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FancyTabLayout">
+        <attr name="isFixed" format="boolean" />
         <attr name="tabFormat" format="enum">
             <enum name="onlyText" value="1" />
             <enum name="imgTitle" value="2" />
